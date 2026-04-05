@@ -5,6 +5,7 @@ import { Show, SignIn, SignInButton, SignUpButton, UserButton } from '@clerk/rea
 import { PenBox, BriefcaseBusiness, Heart } from 'lucide-react'
 import { useUser } from '@clerk/react'
 const Header = () => {
+    
     const [showSignIn, SetShowSignin] = useState(false)
     const { user } = useUser()
     const navigate = useNavigate()
