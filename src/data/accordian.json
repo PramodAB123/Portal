@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "question": "How do I post a job on the portal?",
+        "answer": "Simply sign up as an employer, navigate to the 'Post a Job' page, fill in the job details such as title, description, requirements, and salary range, then publish your listing. It will be visible to thousands of job seekers instantly."
+    },
+    {
+        "id": 2,
+        "question": "Is it free to apply for jobs?",
+        "answer": "Yes! Applying for jobs on our platform is completely free for all job seekers. You can browse, search, and apply to as many positions as you like without any charges."
+    },
+    {
+        "id": 3,
+        "question": "How can I track my job applications?",
+        "answer": "Once you apply for a job, you can track the status of all your applications from the 'My Jobs' dashboard. You'll receive real-time updates when employers view your application or change its status."
+    },
+    {
+        "id": 4,
+        "question": "What makes this portal different from others?",
+        "answer": "Our platform offers a seamless experience with AI-powered job matching, real-time application tracking, and a curated list of verified employers. We prioritize quality over quantity to help you find the perfect fit faster."
+    },
+    {
+        "id": 5,
+        "question": "Can I filter jobs by location or salary?",
+        "answer": "Absolutely! Our advanced search filters let you narrow down jobs by location, salary range, experience level, company, and job type (full-time, part-time, remote, etc.) to find exactly what you're looking for."
+    }
+]
