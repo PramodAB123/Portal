@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useUser } from '@clerk/react'
 import {
     Card,
@@ -11,8 +11,43 @@ import {
 } from "@/components/ui/card"
 import { Button } from './ui/button'
 import { Badge } from './ui/badge'
+import { Heart } from 'lucide-react'
+import { saveJob } from '@/api/apiJobs'
+import useFetch from '@/hooks/UseFetch'
+
 const JobCard = ({ job, isMyJob = false, savedInit = false, onJobSaved = () => { } }) => {
-    const { user } = useUser();
+    const { user } = useUser()
+    const [saved, setSaved] = useState(savedInit)
+    // Track the actual savedjobs record (has the real DB id needed for delete)
+    const [savedRecord, setSavedRecord] = useState(job?.savedjob?.[0] || null)
+
+    const {
+        data: savedJobData,
+        loading: loadingSavedJob,
+        fn: fnSavedJob,
+    } = useFetch(saveJob, {
+        alreadySaved: savedRecord,
+        saveData: { job_id: job.id, user_id: user?.id },
+    })
+
+    // After a save/unsave API call, sync the savedRecord state
+    useEffect(() => {
+        if (savedJobData !== undefined) {
+            setSavedRecord(savedJobData?.data || null)
+        }
+    }, [savedJobData])
+
+    const handleSaveToggle = async () => {
+        await fnSavedJob({
+            alreadySaved: savedRecord,
+            saveData: { job_id: job.id, user_id: user?.id },
+        })
+        setSaved((prev) => {
+            onJobSaved(!prev)
+            return !prev
+        })
+    }
+
     return (
         <>
             <Card className="flex flex-col">
@@ -48,7 +83,18 @@ const JobCard = ({ job, isMyJob = false, savedInit = false, onJobSaved = () => {
                 <CardFooter className="flex gap-2">
                     <Button className="flex-1" variant="secondary">Details</Button>
                     {!isMyJob && (
-                        <Button variant="outline">Save</Button>
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={handleSaveToggle}
+                            disabled={loadingSavedJob}
+                            aria-label={saved ? "Unsave job" : "Save job"}
+                        >
+                            <Heart
+                                size={18}
+                                className={saved ? "fill-red-500 stroke-red-500" : "stroke-current"}
+                            />
+                        </Button>
                     )}
                 </CardFooter>
             </Card>
