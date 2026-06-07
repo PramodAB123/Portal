@@ -4,6 +4,7 @@ import { getJobs } from '@/api/apiJobs'
 import useFetch from '@/hooks/UseFetch';
 import { BarLoader } from 'react-spinners';
 import JobCard from '@/components/JobCard';
+import { Input } from '@/components/ui/input';
 const JobListing = () => {
     const { isLoaded } = useUser();
     const [location, setLocation] = useState("")
@@ -28,10 +29,13 @@ const JobListing = () => {
         <>
             <h1 className='font-bold text-7xl text-center mb-8 pb-8'>Latest Jobs</h1>
             {loadingJobs && <BarLoader className='mb-4' width={"100%"} color='#36d7b7' />}
+            <Input placeholder="Location" value={location} onChange={(e) => setLocation(e.target.value)} />
+            <Input placeholder="Company" value={company_id} onChange={(e) => setCompany_id(e.target.value)} />
+            <Input placeholder="Search Jobs" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             {errorJobs && <p className='text-red-500 text-center'>Error fetching jobs</p>}
             {dataJobs?.length === 0 && <p className='text-center'>No jobs found</p>}
             {dataJobs?.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl mx-auto px-4 pb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto px-12 pb-12">
                     {dataJobs.map((job) => (
                         <JobCard key={job.id} job={job} />
                     ))}
