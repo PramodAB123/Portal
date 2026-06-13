@@ -1,9 +1,16 @@
 import supabaseClient from "../utils/supabase";
 
-export async function getJobs(token, { location, company_id, searchQuery }) {
+export async function getJobs(token, { location, company_id, searchQuery, user_id }) {
     const supabase = await supabaseClient(token);
 
-    let query = supabase.from("jobs").select("*, company:companies(name, logo), savedjob:savedjobs(id, job_id)");
+    // Use a column filter inside the relation to only return THIS user's savedjobs row.
+    // The `user_id=eq.${user_id}` syntax is a Supabase embedded filter — it's a left join
+    // so jobs without a matching savedjobs row still appear (savedjob = []).
+    const savedSelect = user_id
+        ? `savedjob:savedjobs(id, job_id, user_id).user_id=eq.${user_id}`
+        : `savedjob:savedjobs(id, job_id)`;
+    let query = supabase.from("jobs").select(`*, company:companies(name, logo), ${savedSelect}`);
+
 
     if (location) {
         query = query.eq("location", location)
@@ -26,7 +33,12 @@ export async function getJobs(token, { location, company_id, searchQuery }) {
 export async function saveJob(token, { alreadySaved, saveData }) {
     const supabase = await supabaseClient(token);
     if (alreadySaved) {
-        const { data, error } = await supabase.from("savedjobs").delete().eq("id", alreadySaved.id).select();
+        // Match both id and user_id so Supabase RLS policies never block the delete
+        let deleteQuery = supabase.from("savedjobs").delete().eq("id", alreadySaved.id);
+        if (saveData?.user_id) {
+            deleteQuery = deleteQuery.eq("user_id", saveData.user_id);
+        }
+        const { data, error } = await deleteQuery.select();
         if (error) {
             console.error("Error removing saved job:", error);
             return { error };

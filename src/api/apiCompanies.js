@@ -9,11 +9,8 @@ export async function getcompanies(token, { searchQuery, location }) {
     if (location) {
         query = query.eq("location", location)
     }
-    if (company_id) {
-        query = query.eq("company_id", company_id)
-    }
     if (searchQuery) {
-        query = query.ilike("title", `%${searchQuery}%`)
+        query = query.ilike("name", `%${searchQuery}%`)
     }
 
     const { data, error } = await query;
